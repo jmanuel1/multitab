@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Multitab</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      function toUrl (id) {
+        return 'chrome-extension://' + id + '/';
+      }
+
+      var id = 'kckhddfnffeofnfjcpdffpeiljicclbd';
+      window.open(toUrl(id) + 'tab.html');
+    </script>
+  </body>
+</html>
