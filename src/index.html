@@ -5,13 +5,34 @@
     <title>Multitab</title>
   </head>
   <body>
+    <button type="button" name="tabbie">Tabbie</button>
+    <button type="button" name="earth">Google Earth View</button>
     <script type="text/javascript">
-      function toUrl (id) {
-        return 'chrome-extension://' + id + '/';
+      function toUrl (id, page) {
+        return 'chrome-extension://' + id + '/' + page;
       }
 
-      var id = 'kckhddfnffeofnfjcpdffpeiljicclbd';
-      window.open(toUrl(id) + 'tab.html');
+      var model = {
+        tabbie: {
+          id: 'kckhddfnffeofnfjcpdffpeiljicclbd',
+          page: 'tab.html'
+        },
+        earth: {
+          id: 'bhloflhklmhfpedakmangadcdofhnnoh',
+          page: 'index.html'
+        }
+      }
+
+      var buttons = document.querySelectorAll('button');
+
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = function (event) {
+          var name = event.target.getAttribute('name');
+          var id = model[name].id, page = model[name].page;
+
+          window.open(toUrl(id, page));
+        }
+      }
     </script>
   </body>
 </html>
