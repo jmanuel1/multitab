@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Multitab</title>
+    <script src="lib/handlebars-1.0.rc.1.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <script id='ext_template' type="text/x-handlebars-template">
+      {{#each this}}
+        <button type="button" name="{{name}}">{{full_name}}</button>
+      {{/each}}
+    </script>
+    <script type="text/javascript">
+      function toUrl (id, page) {
+        return 'chrome-extension://' + id + '/' + page;
+      }
+
+      var model = [
+        {
+          name: 'tabbie',
+          full_name: 'Tabbie',
+          id: 'kckhddfnffeofnfjcpdffpeiljicclbd',
+          page: 'tab.html'
+        },
+        {
+          name: 'earth',
+          full_name: 'Google Earth View',
+          id: 'bhloflhklmhfpedakmangadcdofhnnoh',
+          page: 'index.html'
+        }
+      ]
+
+      var templateScript = document.querySelector('#ext_template').innerHTML;
+      var template = Handlebars.compile(templateScript);
+      document.body.innerHTML += template(model);
+
+      var buttons = document.querySelectorAll('button');
+
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = function (event) {
+          var name = event.target.getAttribute('name');
+          var ext = model.filter(function (x) {
+            return x.name === name;
+          })[0];
+          var id = ext.id, page = ext.page;
+
+          window.open(toUrl(id, page));
+        }
+      }
+    </script>
+  </body>
+</html>
