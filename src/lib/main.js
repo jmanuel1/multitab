@@ -1,7 +1,3 @@
-function toUrl (id, page) {
-  return 'chrome-extension://' + id + '/' + page;
-}
-
 var model = [
   {
     name: 'tabbie',
@@ -16,6 +12,10 @@ var model = [
     page: 'index.html'
   }
 ]
+
+function toUrl (id, page) {
+  return 'chrome-extension://' + id + '/' + page;
+}
 
 var templateScript = document.querySelector('#ext_template').innerHTML;
 var template = Handlebars.compile(templateScript);
