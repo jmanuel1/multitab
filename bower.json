@@ -1,0 +1,27 @@
+{
+  "name": "multitab",
+  "authors": [
+    "Jason Manuel <jama.indo@hotmail.com>"
+  ],
+  "description": "",
+  "main": "src/index.html",
+  "moduleType": [],
+  "keywords": [
+    "new-tabs",
+    "chrome",
+    "extension"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jmanuel1/multitab",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lovefield": "^2.1.6"
+  }
+}
