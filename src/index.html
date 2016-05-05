@@ -3,16 +3,44 @@
   <head>
     <meta charset="utf-8">
     <title>Multitab</title>
-    <!-- TODO: bower install handlebars -->
-    <script src="lib/handlebars-1.0.rc.1.min.js" charset="utf-8"></script>
     <script src="../bower_components/lovefield/dist/lovefield.js" charset="utf-8"></script>
-  </head>
-  <body>
-    <script id='ext_template' type="text/x-handlebars-template">
-      {{#each this}}
-        <button type="button" name="{{name}}">{{full_name}}</button>
-      {{/each}}
-    </script>
+    <script src="../bower_components/rivets/dist/rivets.bundled.min.js" charset="utf-8"></script>
     <script src='lib/main.js' type="text/javascript"></script>
+  </head>
+  <body id='ext_template'>
+    <h1>Your Extensions</h1>
+    <section>
+      <!-- <div> -->
+        <button type="button" rv-each-ext='model' onclick="openExtension(this)">{ ext.full_name }</button>
+      <!-- </div> -->
+    </section>
+    <h1>How to add an Extension</h1>
+    <ol>
+      <!-- Not a link since Chrome won't allow chrome:// links -->
+      <li>Open <code>chrome://extensions</code>.</li>
+      <li>Check "developer mode" at the top of the page.</li>
+      <li>Find the extension you want, and copy its ID into the textbox below.</li>
+      <input type="text" name="id" rv-value="id">
+      <li>Navigate to <a rv-href="id | toManifestUrl" target="_blank"><code>{ id | toManifestUrl }</code></a>.</li>
+      <li>Copy all of the text on the page into the textbox below.
+        <div><textarea rv-json='manifest'></textarea></div>
+      </li>
+    </ol>
+
+    <section>
+      <h2>Extracted extension information</h2>
+      <p>Name: { manifest.name }</p>
+      <p>
+        ID: { id }
+      </p>
+      <p>
+        New Tab Page: { manifest.chrome_url_overrides.newtab }
+      </p>
+      <p>
+        Add this extension?
+      </p>
+      <button type="button" onclick="addExtension()">Add this extension?</button>
+    </section>
+
   </body>
 </html>
