@@ -10,9 +10,7 @@
   <body id='ext_template'>
     <h1>Your Extensions</h1>
     <section>
-      <!-- <div> -->
-        <button type="button" rv-each-ext='model' onclick="openExtension(this)">{ ext.full_name }</button>
-      <!-- </div> -->
+      <button type="button" rv-each-ext='model' onclick="openExtension(this)">{ ext.full_name }</button>
     </section>
     <h1>How to add an Extension</h1>
     <ol>
@@ -21,7 +19,9 @@
       <li>Check "developer mode" at the top of the page.</li>
       <li>Find the extension you want, and copy its ID into the textbox below.</li>
       <input type="text" name="id" rv-value="id">
-      <li>Navigate to <a rv-href="id | toManifestUrl" target="_blank"><code>{ id | toManifestUrl }</code></a>.</li>
+      <li>Navigate to <a rv-href="id | toManifestUrl" target="_blank">
+        <code>{ id | toManifestUrl }</code>
+      </a>.</li>
       <li>Copy all of the text on the page into the textbox below.
         <div><textarea rv-json='manifest'></textarea></div>
       </li>
@@ -39,7 +39,7 @@
       <p>
         Add this extension?
       </p>
-      <button type="button" onclick="addExtension()">Add this extension?</button>
+      <button type="button" onclick="addExtension()">OK</button>
     </section>
 
   </body>

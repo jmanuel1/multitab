@@ -3,14 +3,21 @@ function toUrl (id, page) {
 }
 
 function addExtension () {
-  var row = ext.createRow({
+  var rawRow = {
     full_name: globalModel.manifest.name,
     id: globalModel.id,
     page: globalModel.manifest.chrome_url_overrides.newtab
-  });
-  return extDb.insertOrReplace().into(ext).values([row]).exec().then(function () {
-    console.log('New extension inserted into database');
-  });
+  };
+  var row = ext.createRow(rawRow);
+  return extDb.insertOrReplace().into(ext).values([row]).exec()
+    .then(function () {
+      console.debug('New extension inserted into database');
+      // change model
+      // NOTE: use push since rivets watches Array.prototype methods instead of
+      // the array; trying to do otherwise causes weird things to happen; see
+      // https://github.com/mikeric/rivets/issues/497#issuecomment-114837422
+      globalModel.model.push(rawRow);
+    });
 }
 
 function openExtension (button) {
@@ -38,9 +45,7 @@ rivets.binders.json = {
     console.log(this.observer.key.path);
     var adapter = rivets.adapters[this.observer.key.i];
     this.callback = function () {
-      // var value = adapter.get(this.model, this.keypath);
       adapter.set(this.model, this.observer.key.path, JSON.parse(el.value));
-      // this.model[property] = JSON.parse(el.value);
     }.bind(this);
     el.addEventListener('input', this.callback);
   },
@@ -49,17 +54,10 @@ rivets.binders.json = {
   }
 }
 
-// rivets.binders.href = {
-//   bind: function (el, value) {
-//     el.setAttribute('href', value);
-//   },
-//
-// }
 var schemaBuilder = lf.schema.create('exts', 1);
 var globalModel;
 
 schemaBuilder.createTable('Extensions').
-  // addColumn('name', lf.Type.STRING).
   addColumn('full_name', lf.Type.STRING).
   addColumn('id', lf.Type.STRING).
   addColumn('page', lf.Type.STRING).
@@ -71,13 +69,11 @@ schemaBuilder.connect().then(function (db) {
   ext = db.getSchema().table('Extensions');
   var rows = [
     {
-      // "name": "tabbie",
       "full_name": "Tabbie",
       "id": "kckhddfnffeofnfjcpdffpeiljicclbd",
       "page": "tab.html"
     },
     {
-      // "name": "earth",
       "full_name": "Google Earth View",
       "id": "bhloflhklmhfpedakmangadcdofhnnoh",
       "page": "index.html"
@@ -92,6 +88,6 @@ schemaBuilder.connect().then(function (db) {
   globalModel = {model: model}
   var view = rivets.bind(template, globalModel);
   window.addEventListener('unload', function () {
-    view.unbind();
+    globalView.unbind();
   });
 });
