@@ -1,3 +1,21 @@
+// NOTE: See rivets issue 532
+// Use rv-attr-* binder
+rivets.binders['attr-*'] = function(el, value) {
+  var attrToSet = this.type.substring(this.type.indexOf('-')+1)
+
+  if(value) {
+    el.setAttribute(attrToSet, value);
+  } else {
+    el.removeAttribute(attrToSet);
+  }
+};
+
+// NOTE: By default unknown binders set an attribute. Which means a typo won't
+// become an error.
+rivets.binders['*'] = function() {
+  console.warn("Unknown binder : " + this.type);
+}
+
 function toUrl (id, page) {
   return 'chrome-extension://' + id + '/' + page;
 }
@@ -30,14 +48,23 @@ function openExtension (button) {
   window.open(toUrl(id, page));
 }
 
+function removeExtension(button) {
+  var id = button.name;
+  return extDb.delete().from(ext).where(ext.id.eq(id)).exec()
+    .then(function () {
+      console.debug('Ext', id, 'removed from database');
+      // find index of deleted ext
+      var index = globalModel.model.map(function (e) {
+        return e.id;
+      }).indexOf(id);
+      globalModel.model.splice(index, 1);
+    })
+}
+
 // toManifestUrl formatter - takes an id and returns url to that extension's
 // manifest
 rivets.formatters.toManifestUrl = function (id) {
   return toUrl(id, 'manifest.json');
-}
-
-rivets.binders.href = function (el, value) {
-  el.setAttribute('href', value);
 }
 
 rivets.binders.json = {
