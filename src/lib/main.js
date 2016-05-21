@@ -81,36 +81,18 @@ rivets.binders.json = {
   }
 }
 
-var schemaBuilder = lf.schema.create('exts', 1);
-var globalModel;
-
-schemaBuilder.createTable('Extensions').
-  addColumn('full_name', lf.Type.STRING).
-  addColumn('id', lf.Type.STRING).
-  addColumn('page', lf.Type.STRING).
-  addPrimaryKey(['id']);
-
-var extDb, ext;
-schemaBuilder.connect().then(function (db) {
-  extDb = db;
-  ext = db.getSchema().table('Extensions');
-  var rows = [
-    {
-      "full_name": "Tabbie",
-      "id": "kckhddfnffeofnfjcpdffpeiljicclbd",
-      "page": "tab.html"
-    },
-    {
-      "full_name": "Google Earth View",
-      "id": "bhloflhklmhfpedakmangadcdofhnnoh",
-      "page": "index.html"
-    }
-  ].map(ext.createRow.bind(ext));
-
-  return db.insertOrReplace().into(ext).values(rows).exec();
-}).then(function () {
-  return extDb.select().from(ext).exec();
-}).then(function (model) {
+// Grab all registered extensions in bookmarks
+BOOKMARKS_BAR = '1';
+chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
+  console.log(bookmarks);
+  var model = bookmarks[0].children.filter(function (b) {
+    return b.title === 'New Tabs';
+  })[0].children.map(function (c) {
+    var full_name = c.title;
+    var url_regex = /chrome-extension:\/\/([a-z]{32})\/(.*)/;
+    var arr = url_regex.exec(c.url);
+    return {full_name: full_name, id: arr[1], page: arr[2]};
+  });
   var template = document.querySelector('#ext_template');
   globalModel = {model: model}
   var view = rivets.bind(template, globalModel);
