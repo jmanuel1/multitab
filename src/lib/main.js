@@ -95,18 +95,42 @@ rivets.binders.json = {
 BOOKMARKS_BAR = '1';
 chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
   console.log(bookmarks);
-  var model = bookmarks[0].children.filter(function (b) {
-    return b.title === 'New Tabs'; // TODO: ensure it exists
-  })[0].children.map(function (c) {
-    var full_name = c.title;
-    var url_regex = /chrome-extension:\/\/([a-z]{32})\/(.*)/;
-    var arr = url_regex.exec(c.url);
-    return {full_name: full_name, id: arr[1], page: arr[2]};
-  });
+
+  var folder = bookmarks[0].children.filter(function (b) {
+    return b.title === 'New Tabs';
+  })[0];
+
+  if (folder === undefined) { // ensure it exists
+    chrome.bookmarks.create({
+      parentId: BOOKMARKS_BAR,
+      title: 'New Tabs'
+    }, function (new_folder) {
+      init(new_folder);
+    });
+    return;
+  }
+
+  init(folder);
+
+  // TODO: watch folder for changes
+});
+
+function init(folder) {
+  if (folder.children) {
+    var model = folder.children.map(function (c) {
+      var full_name = c.title;
+      var url_regex = /chrome-extension:\/\/([a-z]{32})\/(.*)/;
+      var arr = url_regex.exec(c.url);
+      return {full_name: full_name, id: arr[1], page: arr[2]};
+    });
+    globalModel = {model: model}
+  } else {
+    globalModel = {model: []};
+  }
+
   var template = document.querySelector('#ext_template');
-  globalModel = {model: model}
   var view = rivets.bind(template, globalModel);
   window.addEventListener('unload', function () {
     globalView.unbind();
   });
-});
+}
