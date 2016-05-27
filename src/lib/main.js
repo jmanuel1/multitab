@@ -38,14 +38,24 @@ function addExtension () {
     });
 }
 
-function openExtension (button) {
-  var name = button.innerHTML;
-  var ext = globalModel.model.filter(function (x) {
-    return x.full_name === name;
-  })[0];
-  var id = ext.id, page = ext.page;
-
-  window.open(toUrl(id, page));
+rivets.components['extension-opener'] = {
+  template: function () {
+    return '<span>{ ext.full_name }</span>'
+  },
+  initialize: function (el, data) {
+    el.addEventListener('click', function () {
+      var tab_id;
+      chrome.tabs.getCurrent(function (tab) {
+        tab_id = tab.id;
+        chrome.tabs.update(tab_id, {
+          url: toUrl(data.ext.id, data.ext.page)
+        });
+      });
+    });
+    return {
+      ext: data.ext
+    };
+  }
 }
 
 function removeExtension(button) {
@@ -86,7 +96,7 @@ BOOKMARKS_BAR = '1';
 chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
   console.log(bookmarks);
   var model = bookmarks[0].children.filter(function (b) {
-    return b.title === 'New Tabs';
+    return b.title === 'New Tabs'; // TODO: ensure it exists
   })[0].children.map(function (c) {
     var full_name = c.title;
     var url_regex = /chrome-extension:\/\/([a-z]{32})\/(.*)/;
