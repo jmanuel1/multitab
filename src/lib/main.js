@@ -112,7 +112,11 @@ chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
 
   init(folder);
 
-  // TODO: watch folder for changes
+  /*
+    NOTE: folder is NOT watched for changes. If the contents of the folder
+    change, Multitab must be reloaded. Justification: it's the new tab page,
+    so it's being reloaded in every new tab anyways.
+  */
 });
 
 function init(folder) {
