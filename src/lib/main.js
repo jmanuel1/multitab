@@ -38,37 +38,38 @@ function addExtension () {
     });
 }
 
-rivets.components['extension-opener'] = {
+rivets.components.extension = {
   template: function () {
-    return '<span>{ ext.full_name }</span>'
+    return '<button type="button" class="ext-opener">{ ext.full_name }</button>' +
+      '<button type="button" class="ext-remover">Remove</button>';
   },
+
   initialize: function (el, data) {
-    el.addEventListener('click', function () {
-      var tab_id;
+    el.querySelector('.ext-opener').addEventListener('click', function () {
       chrome.tabs.getCurrent(function (tab) {
-        tab_id = tab.id;
-        chrome.tabs.update(tab_id, {
+        chrome.tabs.update(tab.id, {
           url: toUrl(data.ext.id, data.ext.page)
         });
       });
     });
+
+    el.querySelector('.ext-remover').addEventListener('click', function () {
+      removeExtension(data.ext.id);
+    });
+
     return {
       ext: data.ext
     };
   }
 }
 
-function removeExtension(button) {
-  var id = button.name;
-  return extDb.delete().from(ext).where(ext.id.eq(id)).exec()
-    .then(function () {
-      console.debug('Ext', id, 'removed from database');
-      // find index of deleted ext
-      var index = globalModel.model.map(function (e) {
-        return e.id;
-      }).indexOf(id);
-      globalModel.model.splice(index, 1);
-    })
+function removeExtension(id) {
+  var index = globalModel.model.map(function (e) {
+    return e.id;
+  }).indexOf(id);
+  chrome.bookmarks.remove(globalModel.model.splice(index, 1)[0].bookmark_id, function () {
+    console.debug('Ext', id, 'removed from model and bookmarks');
+  });
 }
 
 // toManifestUrl formatter - takes an id and returns url to that extension's
@@ -104,9 +105,7 @@ chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
     chrome.bookmarks.create({
       parentId: BOOKMARKS_BAR,
       title: 'New Tabs'
-    }, function (new_folder) {
-      init(new_folder);
-    });
+    }, init);
     return;
   }
 
@@ -125,7 +124,7 @@ function init(folder) {
       var full_name = c.title;
       var url_regex = /chrome-extension:\/\/([a-z]{32})\/(.*)/;
       var arr = url_regex.exec(c.url);
-      return {full_name: full_name, id: arr[1], page: arr[2]};
+      return {full_name: full_name, id: arr[1], page: arr[2], bookmark_id: c.id};
     });
     globalModel = {model: model}
   } else {
@@ -135,6 +134,6 @@ function init(folder) {
   var template = document.querySelector('#ext_template');
   var view = rivets.bind(template, globalModel);
   window.addEventListener('unload', function () {
-    globalView.unbind();
+    view.unbind();
   });
 }
