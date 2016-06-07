@@ -11,8 +11,7 @@
     <h1>Your Extensions</h1>
     <section>
       <div rv-each-ext='model'>
-        <button type="button"><extension-opener ext='ext'></extension-opener></button>
-        <button type="button" rv-attr-name="ext.id" onclick="removeExtension(this)">Remove</button>
+        <extension ext='ext'></extension>
       </div>
     </section>
     <h1>How to add an Extension</h1>
