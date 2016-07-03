@@ -8,41 +8,47 @@
     <script src='lib/main.js' type="text/javascript"></script>
   </head>
   <body id='ext_template'>
-    <h1>Your Extensions</h1>
     <section>
+      <h1>Your Extensions</h1>
       <div rv-each-ext='model'>
         <extension ext='ext'></extension>
       </div>
     </section>
-    <h1>How to add an Extension</h1>
-    <ol>
-      <!-- Not a link since Chrome won't allow chrome:// links -->
-      <li>Open <code>chrome://extensions</code>.</li>
-      <li>Check "developer mode" at the top of the page.</li>
-      <li>Find the extension you want, and copy its ID into the textbox below.</li>
-      <input type="text" name="id" rv-value="id">
-      <li>Navigate to <a rv-attr-href="id | toManifestUrl" target="_blank">
-        <code>{ id | toManifestUrl }</code>
-      </a>.</li>
-      <li>Copy all of the text on the page into the textbox below.
-        <div><textarea rv-json='manifest'></textarea></div>
-      </li>
-    </ol>
+
+    <section>
+      <h1>Add an Extension</h1>
+      <ol>
+        <li>Find the extension you want below.</li>
+        <extension-selector rv-value='ext'></extension-selector>
+      </ol>
+
+      <button type="button" rv-on-click="toggleManifestInput">
+        <span rv-hide='showManifestInput'>Enter manifest</span>
+        <span rv-show='showManifestInput'>Close manifest input</span>
+      </button>
+      <div rv-show='showManifestInput'>
+        <p>
+          Copy the content of the tab that just opened into the textbox below.
+        </p>
+        <textarea name="manifest" rv-json='manifest'></textarea>
+      </div>
+    </section>
 
     <section>
       <h2>Extracted extension information</h2>
-      <p>Name: { manifest.name }</p>
-      <p>
-        ID: { id }
-      </p>
-      <p>
-        New Tab Page: { manifest.chrome_url_overrides.newtab }
-      </p>
-      <p>
-        Add this extension?
-      </p>
-      <button type="button" onclick="addExtension()">OK</button>
-    </section>
+      <div rv-show='manifest.chrome_url_overrides.newtab'>
+        <p>
+          New Tab Page: { manifest.chrome_url_overrides.newtab }
+        </p>
+        <p>
+          Add this extension?
+        </p>
+        <button type="button" rv-on-click='extensionManager.addExtension'>OK</button>
+      </div>
 
+      <p rv-hide='manifest.chrome_url_overrides.newtab'>
+        <strong>This is not a new tab extension.</strong>
+      </p>
+    </section>
   </body>
 </html>

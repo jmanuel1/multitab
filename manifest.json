@@ -3,7 +3,8 @@
   "name": "Multitab",
   "version": "0.1.0",
   "permissions": [
-    "bookmarks"
+    "bookmarks",
+    "management"
   ],
   "chrome_url_overrides": {
     "newtab": "src/index.html"

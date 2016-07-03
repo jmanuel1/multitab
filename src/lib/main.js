@@ -20,22 +20,25 @@ function toUrl (id, page) {
   return 'chrome-extension://' + id + '/' + page;
 }
 
-function addExtension () {
-  var rawRow = {
-    full_name: globalModel.manifest.name,
-    id: globalModel.id,
-    page: globalModel.manifest.chrome_url_overrides.newtab
-  };
-  var row = ext.createRow(rawRow);
-  return extDb.insertOrReplace().into(ext).values([row]).exec()
-    .then(function () {
-      console.debug('New extension inserted into database');
-      // change model
-      // NOTE: use push since rivets watches Array.prototype methods instead of
-      // the array; trying to do otherwise causes weird things to happen; see
-      // https://github.com/mikeric/rivets/issues/497#issuecomment-114837422
-      globalModel.model.push(rawRow);
+function toggleManifestInput() {
+  globalModel.showManifestInput = !globalModel.showManifestInput;
+  if (globalModel.showManifestInput) {
+    chrome.tabs.create({
+      url: toUrl(JSON.parse(globalModel.ext).id, 'manifest.json'),
+      active: false
     });
+  }
+}
+
+extensionManager = {
+  addExtension: function () {
+    var ext = JSON.parse(globalModel.ext);
+    chrome.bookmarks.create({
+      'parentId': NEW_TABS_FOLDER.id,
+      'title': ext.name,
+      'url': toUrl(ext.id, globalModel.manifest.chrome_url_overrides.newtab)
+    });
+  }
 }
 
 rivets.components.extension = {
@@ -63,6 +66,31 @@ rivets.components.extension = {
   }
 }
 
+rivets.components['extension-selector'] = {
+  template: function () {
+    return '<select></select>';
+  },
+
+  initialize: function (el, data) {
+    chrome.management.getAll(function (extensions) {
+      extensions.filter(function (ext) {
+        return ext.type === 'extension';
+      }).forEach(function (ext) {
+        var opt = document.createElement('option');
+        opt.text = ext.name;
+        opt.value = JSON.stringify(ext);
+        el.querySelector('select').add(opt);
+      });
+      el.querySelector('select').addEventListener('change', function () {
+          var event = new Event('input');
+          el.value = this.value;
+          el.dispatchEvent(event);
+      });
+    });
+    return {};
+  }
+}
+
 function removeExtension(id) {
   var index = globalModel.model.map(function (e) {
     return e.id;
@@ -80,7 +108,6 @@ rivets.formatters.toManifestUrl = function (id) {
 
 rivets.binders.json = {
   bind: function (el) {
-    console.log(this.observer.key.path);
     var adapter = rivets.adapters[this.observer.key.i];
     this.callback = function () {
       adapter.set(this.model, this.observer.key.path, JSON.parse(el.value));
@@ -93,15 +120,15 @@ rivets.binders.json = {
 }
 
 // Grab all registered extensions in bookmarks
-BOOKMARKS_BAR = '1';
+var BOOKMARKS_BAR = '1', NEW_TABS_FOLDER;
 chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
   console.log(bookmarks);
 
-  var folder = bookmarks[0].children.filter(function (b) {
+  NEW_TABS_FOLDER = bookmarks[0].children.filter(function (b) {
     return b.title === 'New Tabs';
   })[0];
 
-  if (folder === undefined) { // ensure it exists
+  if (NEW_TABS_FOLDER === undefined) { // ensure it exists
     chrome.bookmarks.create({
       parentId: BOOKMARKS_BAR,
       title: 'New Tabs'
@@ -109,7 +136,7 @@ chrome.bookmarks.getSubTree(BOOKMARKS_BAR, function (bookmarks) {
     return;
   }
 
-  init(folder);
+  init(NEW_TABS_FOLDER);
 
   /*
     NOTE: folder is NOT watched for changes. If the contents of the folder
@@ -130,6 +157,9 @@ function init(folder) {
   } else {
     globalModel = {model: []};
   }
+
+  globalModel.extensionManager = extensionManager;
+  globalModel.toggleManifestInput = toggleManifestInput;
 
   var template = document.querySelector('#ext_template');
   var view = rivets.bind(template, globalModel);
