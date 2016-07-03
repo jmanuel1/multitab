@@ -37,6 +37,13 @@ extensionManager = {
       'parentId': NEW_TABS_FOLDER.id,
       'title': ext.name,
       'url': toUrl(ext.id, globalModel.manifest.chrome_url_overrides.newtab)
+    }, function (bookmark) {
+      globalModel.model.push({
+        full_name: ext.name,
+        id: ext.id,
+        page: globalModel.manifest.chrome_url_overrides.newtab,
+        bookmark_id: bookmark.id
+      });
     });
   }
 }
