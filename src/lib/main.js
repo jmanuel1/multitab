@@ -1,3 +1,5 @@
+/* Rivets binders */
+
 // NOTE: See rivets issue 532
 // Use rv-attr-* binder
 rivets.binders['attr-*'] = function(el, value) {
@@ -16,10 +18,27 @@ rivets.binders['*'] = function() {
   console.warn("Unknown binder : " + this.type);
 }
 
+rivets.binders.json = {
+  bind: function (el) {
+    var adapter = rivets.adapters[this.observer.key.i];
+    this.callback = function () {
+      adapter.set(this.model, this.observer.key.path, JSON.parse(el.value));
+    }.bind(this);
+    el.addEventListener('input', this.callback);
+  },
+  unbind: function (el) {
+    el.removeEventListener('input', this.callback);
+  }
+}
+
+
+/* Utility functions */
+
 function toUrl (id, page) {
   return 'chrome-extension://' + id + '/' + page;
 }
 
+// Used only by view
 function toggleManifestInput() {
   globalModel.showManifestInput = !globalModel.showManifestInput;
   if (globalModel.showManifestInput) {
@@ -29,6 +48,9 @@ function toggleManifestInput() {
     });
   }
 }
+
+
+/* Extension manager */
 
 extensionManager = {
   addExtension: function () {
@@ -47,6 +69,18 @@ extensionManager = {
     });
   }
 }
+
+function removeExtension(id) {
+  var index = globalModel.model.map(function (e) {
+    return e.id;
+  }).indexOf(id);
+  chrome.bookmarks.remove(globalModel.model.splice(index, 1)[0].bookmark_id, function () {
+    console.debug('Ext', id, 'removed from model and bookmarks');
+  });
+}
+
+
+/* Rivets components */
 
 rivets.components.extension = {
   template: function () {
@@ -98,14 +132,8 @@ rivets.components['extension-selector'] = {
   }
 }
 
-function removeExtension(id) {
-  var index = globalModel.model.map(function (e) {
-    return e.id;
-  }).indexOf(id);
-  chrome.bookmarks.remove(globalModel.model.splice(index, 1)[0].bookmark_id, function () {
-    console.debug('Ext', id, 'removed from model and bookmarks');
-  });
-}
+
+/* Rivets formatters */
 
 // toManifestUrl formatter - takes an id and returns url to that extension's
 // manifest
@@ -113,18 +141,8 @@ rivets.formatters.toManifestUrl = function (id) {
   return toUrl(id, 'manifest.json');
 }
 
-rivets.binders.json = {
-  bind: function (el) {
-    var adapter = rivets.adapters[this.observer.key.i];
-    this.callback = function () {
-      adapter.set(this.model, this.observer.key.path, JSON.parse(el.value));
-    }.bind(this);
-    el.addEventListener('input', this.callback);
-  },
-  unbind: function (el) {
-    el.removeEventListener('input', this.callback);
-  }
-}
+
+/* Obtaining model and view init */
 
 // Grab all registered extensions in bookmarks
 var BOOKMARKS_BAR = '1', NEW_TABS_FOLDER;
