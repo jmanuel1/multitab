@@ -39,3 +39,37 @@ After pasting into the textbox, if the extension you chose is not a new tab
 extension, the message 'This is not a new tab extension.' will be displayed at
 the bottom of the page. Otherwise, press the OK button that appears at the
 bottom of the page.
+
+
+Contributing
+------------
+
+As for style, all I can say is the follow what's already here (including
+directory structure). Here are some code snippets to serve as examples.
+
+```js
+function toggleManifestInput() {
+  globalModel.showManifestInput = !globalModel.showManifestInput;
+  if (globalModel.showManifestInput) {
+    chrome.tabs.create({
+      url: toUrl(JSON.parse(globalModel.ext).id, 'manifest.json'),
+      active: false
+    });
+  }
+}
+```
+
+```html
+<head>
+  <meta charset="utf-8">
+  <title>Multitab</title>
+  <script src="../bower_components/rivets/dist/rivets.bundled.min.js"
+    charset="utf-8"></script>
+  <script src='lib/main.js' type="text/javascript"></script>
+</head>
+```
+
+Try to keep lines under 80 characters.
+
+As for unit tests--none have actually been written yet. So any pull requests
+will be put on hold until that's sorted out.
