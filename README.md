@@ -73,3 +73,13 @@ Try to keep lines under 80 characters.
 
 As for unit tests--none have actually been written yet. So any pull requests
 will be put on hold until that's sorted out.
+
+
+Roadmap
+-------
+
+1. Add tests
+2. Design user interface
+2. Add random new tab and round robin new tab selection
+4. Publish the thing
+5. *The future is what you make it*
