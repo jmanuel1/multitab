@@ -101,6 +101,10 @@ rivets.components.extension = {
       removeExtension(data.ext.id);
     });
 
+    // Public properties
+    el.openButton = el.querySelector('.ext-opener');
+    el.removeButton = el.querySelector('.ext-remover');
+
     return {
       ext: data.ext
     };
