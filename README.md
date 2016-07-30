@@ -3,6 +3,8 @@ Multitab
 
 A new tab page that opens other new tab pages!!!
 
+![Mandatory screenshot](https://cloud.githubusercontent.com/assets/7255867/17273300/92a79b10-569f-11e6-9c7f-78111d984dce.gif)
+
 This is a chrome extension. It's not published, so you'll have to clone the
 repo, then install it as an unpacked extension.
 
