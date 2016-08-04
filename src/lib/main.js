@@ -127,11 +127,17 @@ rivets.components['extension-selector'] = {
         el.querySelector('select').add(opt);
       });
       el.querySelector('select').addEventListener('change', function () {
-          var event = new Event('input');
-          el.value = this.value;
-          el.dispatchEvent(event);
+        var event = new Event('input');
+        el.value = this.value;
+        el.dispatchEvent(event);
       });
     });
+
+    // Public properties
+    el.options = el.querySelector('select').options;
+    el.selectElement = el.querySelector('select');
+    el.value = el.selectElement.value;
+
     return {};
   }
 }
