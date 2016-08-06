@@ -17,12 +17,18 @@ beforeEach(function () {
         ];
         callback(exts);
       }
+    },
+    bookmarks: {
+      create: function (info, callback) {
+        callback({id: 'bookmark-id'});
+      }
     }
   };
   spyOn(chrome.tabs, "getCurrent").and.callThrough();
   spyOn(chrome.tabs, "update");
   spyOn(chrome.management, "getAll").and.callThrough();
   spyOn(chrome.tabs, "create");
+  spyOn(chrome.bookmarks, "create").and.callThrough();
 
   // Spies on things we don't want to test
   window.removeExtension = function (id) {};
