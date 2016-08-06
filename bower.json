@@ -22,6 +22,7 @@
     "tests"
   ],
   "dependencies": {
-    "rivets": "^0.8.1"
+    "rivets": "^0.8.1",
+    "jasmine-core": "jasmine#^2.4.1"
   }
 }
