@@ -73,14 +73,15 @@ function toggleManifestInput() {
 
 Try to keep lines under 80 characters.
 
-As for unit tests--none have actually been written yet. So any pull requests
-will be put on hold until that's sorted out.
+Unit tests are written using Jasmine. They are in the `src/specs` directory.
+Run the specs by opening `src/test.html` in a browser.
+
+All specs for components should go into `src/specs/components`.
 
 
 Roadmap
 -------
 
-1. Add tests
 2. Design user interface
 2. Add random new tab and round robin new tab selection
 4. Publish the thing
