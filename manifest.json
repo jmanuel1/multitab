@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Multitab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "permissions": [
     "bookmarks",
     "management"
