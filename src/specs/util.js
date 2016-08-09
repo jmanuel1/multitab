@@ -1,6 +1,6 @@
 describe("The toggleManifestInput function", function () {
   beforeEach(function () {
-    window.globalModel = {showManifestInput: false, ext: '{"id":"some-id"}'};
+    window.globalModel = {showManifestInput: false, ext: {"id": "some-id"}};
   });
   it("should toggle globalModel.showManifestInput", function () {
     toggleManifestInput();

@@ -1,7 +1,7 @@
 describe("extensionManager.addExtension", function () {
   beforeEach(function () {
     window.globalModel = {
-      ext: JSON.stringify({name: 'ext-name', id: 'ext-id'}),
+      ext: {name: 'ext-name', id: 'ext-id'},
       manifest: {chrome_url_overrides: {newtab: 'newtab.html'}},
       model: []
     }

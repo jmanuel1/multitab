@@ -43,7 +43,7 @@ function toggleManifestInput() {
   globalModel.showManifestInput = !globalModel.showManifestInput;
   if (globalModel.showManifestInput) {
     chrome.tabs.create({
-      url: toUrl(JSON.parse(globalModel.ext).id, 'manifest.json'),
+      url: toUrl(globalModel.ext.id, 'manifest.json'),
       active: false
     });
   }
@@ -54,7 +54,7 @@ function toggleManifestInput() {
 
 extensionManager = {
   addExtension: function () {
-    var ext = JSON.parse(globalModel.ext);
+    var ext = globalModel.ext;
     chrome.bookmarks.create({
       'parentId': NEW_TABS_FOLDER.id,
       'title': ext.name,
