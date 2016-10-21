@@ -23,6 +23,7 @@
   ],
   "dependencies": {
     "rivets": "^0.8.1",
-    "jasmine-core": "jasmine#^2.4.1"
+    "jasmine-core": "jasmine#^2.4.1",
+    "material-design-icons": "^3.0.1"
   }
 }
