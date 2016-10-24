@@ -84,11 +84,14 @@ function removeExtension(id) {
 
 rivets.components.extension = {
   template: function () {
-    return '<button type="button" class="ext-opener">{ ext.full_name }</button>' +
+    return '<div type="button" class="ext-opener mdl-card">' +
+      '<div class="mdl-card__title"><h1 class="mdl-card__title-text">{ ext.full_name }</h1>' + '</div></div>' +
       '<button type="button" class="ext-remover">Remove</button>';
   },
 
   initialize: function (el, data) {
+    var color, hue, saturation, lightness;
+
     el.querySelector('.ext-opener').addEventListener('click', function () {
       chrome.tabs.getCurrent(function (tab) {
         chrome.tabs.update(tab.id, {
@@ -102,8 +105,15 @@ rivets.components.extension = {
     });
 
     // Public properties
-    el.openButton = el.querySelector('.ext-opener');
+    el.openButton = el.querySelector('.ext-opener'); // TODO: rename!
     el.removeButton = el.querySelector('.ext-remover');
+
+    // Dynamic styles
+    hue = Math.floor(Math.random()*360);
+    saturation = Math.floor(Math.random()*100);
+    lightness = Math.floor(Math.random()*50);
+    color = 'hsl(' + hue + ',' + saturation + '%,' + lightness + '%)';
+    el.openButton.style.backgroundColor = color;
 
     return {
       ext: data.ext

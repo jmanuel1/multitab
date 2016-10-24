@@ -10,17 +10,24 @@
       href="../bower_components/material-design-icons/iconfont/material-icons.css">
     <link rel="stylesheet"
       href="styles/material.css"> <!-- deep purple/light green -->
+    <link rel="stylesheet" href='styles/main.css'>
     <script defer src="lib/material.min.js"></script>
   </head>
   <body id='ext_template'>
-    <section>
-      <h1>Your Extensions</h1>
-      <div rv-each-ext='model'>
-        <extension ext='ext'></extension>
+    <section class='mdl-layout mdl-js-layout'>
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout__title">Your Extensions</span>
+        </div>
+      </header>
+      <div class="mdl-grid mdl-layout__content">
+        <div rv-each-ext='model' class='mdl-cell mdl-cell--6-col'>
+          <extension ext='ext'></extension>
+        </div>
       </div>
     </section>
 
-    <section>
+    <section style="display:none">
       <h1>Add an Extension</h1>
       <ol>
         <li>Find the extension you want below.</li>
@@ -40,7 +47,7 @@
       </div>
     </section>
 
-    <section>
+    <section style="display:none">
       <h2>Extracted extension information</h2>
       <div rv-show='manifest.chrome_url_overrides.newtab'>
         <p>
