@@ -85,7 +85,9 @@ function removeExtension(id) {
 rivets.components.extension = {
   template: function () {
     return '<div type="button" class="ext-opener mdl-card">' +
-      '<div class="mdl-card__title"><h1 class="mdl-card__title-text">{ ext.full_name }</h1>' + '</div></div>' +
+      '<div class="mdl-card__title"><h1 class="mdl-card__title-text">{ ext.full_name }</h1>' +
+      '</div><div class="mdl-card__action"><i class="material-icons">mode_edit' +
+      '</i><i class="material-icons">delete</i></div></div>' +
       '<button type="button" class="ext-remover">Remove</button>';
   },
 
@@ -210,5 +212,11 @@ function init(folder) {
   var view = rivets.bind(template, globalModel);
   window.addEventListener('unload', function () {
     view.unbind();
+  });
+
+  // FAB to add extension
+  document.getElementById('add-extension-button').addEventListener('click', function () {
+    document.getElementById('extension-chooser-page').style.display = 'none';
+    document.getElementById('extension-add-page').style.display = 'initial';
   });
 }

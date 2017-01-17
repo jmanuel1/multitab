@@ -1,3 +1,10 @@
+.mdl-button--fab {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1;
+}
+
 .mdl-cell {
   height: 50%;
   margin: 0px;
@@ -27,3 +34,14 @@
 .ext-remover {
   display: none;
 }
+
+.mdl-card__action {
+  position: absolute;
+  right: 0px;
+  padding: 8px;
+  color: #fff;
+}
+
+/*.mdl-card__action .material-icons {
+  font-size: 36px;
+}*/

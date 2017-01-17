@@ -82,7 +82,9 @@ All specs for components should go into `src/specs/components`.
 Roadmap
 -------
 
+1. Modularize `main.js`
 2. Design user interface
 2. Add random new tab and round robin new tab selection
+3. Build process
 4. Publish the thing
 5. *The future is what you make it*
