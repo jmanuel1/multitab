@@ -83,6 +83,7 @@ Roadmap
 -------
 
 1. Modularize `main.js`
+1. Convert to ES2016
 2. Design user interface
 2. Add random new tab and round robin new tab selection
 3. Build process

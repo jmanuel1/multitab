@@ -84,11 +84,10 @@ function removeExtension(id) {
 
 rivets.components.extension = {
   template: function () {
-    return '<div type="button" class="ext-opener mdl-card">' +
-      '<div class="mdl-card__title"><h1 class="mdl-card__title-text">{ ext.full_name }</h1>' +
+    return '<div class="mdl-card">' +
+      '<div class="mdl-card__title ext-opener"><h1 class="mdl-card__title-text">{ ext.full_name }</h1>' +
       '</div><div class="mdl-card__action"><i class="material-icons">mode_edit' +
-      '</i><i class="material-icons">delete</i></div></div>' +
-      '<button type="button" class="ext-remover">Remove</button>';
+      '</i><i class="material-icons ext-remover">delete</i></div></div>';
   },
 
   initialize: function (el, data) {
@@ -103,19 +102,28 @@ rivets.components.extension = {
     });
 
     el.querySelector('.ext-remover').addEventListener('click', function () {
-      removeExtension(data.ext.id);
+      if (el._confirmDelete()) {
+        removeExtension(data.ext.id);
+      }
     });
 
     // Public properties
     el.openButton = el.querySelector('.ext-opener'); // TODO: rename!
     el.removeButton = el.querySelector('.ext-remover');
 
+    // Private properties
+    el._confirmDelete = function () {
+      // Display a confirmation dialog
+      return confirm("Are you sure you want to remove " + data.ext.full_name +
+        " from Multitab?");
+    }
+
     // Dynamic styles
     hue = Math.floor(Math.random()*360);
     saturation = Math.floor(Math.random()*100);
     lightness = Math.floor(Math.random()*50);
     color = 'hsl(' + hue + ',' + saturation + '%,' + lightness + '%)';
-    el.openButton.style.backgroundColor = color;
+    el.querySelector('.mdl-card').style.backgroundColor = color;
 
     return {
       ext: data.ext
